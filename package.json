@@ -1,0 +1,8 @@
+{
+  "name": "seneca-toolbag-stats",
+  "version": "0.0.1",
+  "description": "A toolbag collector for seneca-stats",
+  "main": "toolbag-stats.js",
+  "author": "Dean McDonnell (http://mcdonnelldean.me)",
+  "license": "MIT"
+}
