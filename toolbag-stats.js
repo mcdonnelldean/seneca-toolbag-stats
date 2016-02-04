@@ -26,6 +26,8 @@ function handle_map_stats (msg, done) {
 
     metrics = metrics.concat(make_memory_usage(msg))
     metrics = metrics.concat(make_cpu_snapshot(msg))
+    metrics = metrics.concat(make_system_snapshot(msg))
+    metrics = metrics.concat(make_process_snapshot(msg))
 
     done(null, {metrics: metrics})
   })
@@ -74,4 +76,45 @@ function make_cpu_snapshot (msg) {
   })
 
   return series
+}
+
+function make_system_snapshot (msg) {
+  var sys = msg.system
+  var proc = msg.process
+
+  var series = {
+    metric: 'system_snapshot',
+    values: {
+      mem_total: sys.totalmem,
+      mem_used: sys.freemem,
+      uptime: sys.uptime
+    },
+    tags: {
+      pid: proc.pid,
+      arch: sys.arch,
+      host: sys.hostname,
+      platform: sys.platform
+    }
+  }
+
+  return [series]
+}
+
+function make_process_snapshot (msg) {
+  var proc = msg.process
+
+  var series = {
+    metric: 'process_snapshot',
+    values: {
+      uptime: proc.uptime
+    },
+    tags: {
+      pid: proc.pid,
+      title: proc.title,
+      host: sys.hostname,
+      platform: sys.platform
+    }
+  }
+
+  return [series]
 }
