@@ -7,7 +7,7 @@ var defaults = {
 }
 
 module.exports = function (opts) {
-  var seneca = this.seneca
+  var seneca = this
   var extend = seneca.util.deepextend
 
   opts = extend(defaults, opts)
