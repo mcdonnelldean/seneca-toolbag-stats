@@ -4,5 +4,9 @@
   "description": "A toolbag collector for seneca-stats",
   "main": "toolbag-stats.js",
   "author": "Dean McDonnell (http://mcdonnelldean.me)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "4.2.1",
+    "seneca": "1.1.0"
+  }
 }
