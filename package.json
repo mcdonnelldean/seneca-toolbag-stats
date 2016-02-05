@@ -5,8 +5,13 @@
   "main": "toolbag-stats.js",
   "author": "Dean McDonnell (http://mcdonnelldean.me)",
   "license": "MIT",
+  "scripts": {
+    "rig": "node -r toolbag ./test/rig.js"
+  },
   "dependencies": {
     "lodash": "4.2.1",
-    "seneca": "1.1.0"
+    "seneca": "1.1.0",
+    "seneca-stats": "mcdonnelldean/seneca-stats",
+    "toolbag": "0.6.0"
   }
 }

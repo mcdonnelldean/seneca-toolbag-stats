@@ -111,8 +111,8 @@ function make_process_snapshot (msg) {
     tags: {
       pid: proc.pid,
       title: proc.title,
-      host: sys.hostname,
-      platform: sys.platform
+      host: proc.hostname,
+      platform: proc.platform
     }
   }
 
