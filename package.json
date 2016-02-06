@@ -12,6 +12,6 @@
     "lodash": "4.2.1",
     "seneca": "1.1.0",
     "seneca-stats": "mcdonnelldean/seneca-stats",
-    "toolbag": "0.6.0"
+    "toolbag": "^0.7.0"
   }
 }

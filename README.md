@@ -71,3 +71,18 @@ This module is currently a work in progress.
   }
 }
 ```
+
+### Event Loop Snapshot
+```
+{
+  "metric": "event_loop_snapshot",
+  "values": {
+    "delay": 4.115284979343414,
+    "limit": 30
+  },
+  "tags": {
+    "over_limit": false,
+    "pid": 56712
+  }
+}
+```

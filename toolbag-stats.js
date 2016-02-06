@@ -28,6 +28,7 @@ function handle_map_stats (msg, done) {
     metrics = metrics.concat(make_cpu_snapshot(msg))
     metrics = metrics.concat(make_system_snapshot(msg))
     metrics = metrics.concat(make_process_snapshot(msg))
+    metrics = metrics.concat(make_eventloop_snapshot(msg))
 
     done(null, {metrics: metrics})
   })
@@ -113,6 +114,25 @@ function make_process_snapshot (msg) {
       title: proc.title,
       host: proc.hostname,
       platform: proc.platform
+    }
+  }
+
+  return [series]
+}
+
+function make_eventloop_snapshot (msg) {
+  var loop = msg.eventLoop
+  var proc = msg.process
+
+  var series = {
+    metric: 'event_loop_snapshot',
+    values: {
+      delay: loop.delay,
+      limit: loop.limit
+    },
+    tags: {
+      over_limit: loop.overLimit,
+      pid: proc.pid
     }
   }
 
