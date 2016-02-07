@@ -3,7 +3,7 @@
 var _ = require('lodash')
 
 var defaults = {
-  plugin: 'stats'
+  plugin: 'toolbag-stats'
 }
 
 module.exports = function (opts) {
@@ -12,45 +12,24 @@ module.exports = function (opts) {
 
   opts = extend(defaults, opts)
 
-  seneca.add({role: opts.plugin, cmd: 'map', type:'stats'}, handle_map_stats)
+  seneca.add({role: 'stats', cmd: 'map', type:'stats'}, map_stats)
 
-  return 'toolbag-stats'
+  return opts.plugin
 }
 
-function handle_map_stats (msg, done) {
-  this.prior(msg, function (err, metrics) {
+function map_stats (msg, done) {
+  this.prior(msg, function (err, stats) {
     if (err) this.log.error(err)
 
-    metrics = metrics || []
+    stats = stats || []
     msg = msg.payload
 
-    metrics = metrics.concat(make_memory_usage(msg))
-    metrics = metrics.concat(make_cpu_snapshot(msg))
-    metrics = metrics.concat(make_system_snapshot(msg))
-    metrics = metrics.concat(make_process_snapshot(msg))
-    metrics = metrics.concat(make_eventloop_snapshot(msg))
+    stats = stats.concat(make_cpu_snapshot(msg))
+    stats = stats.concat(make_process_snapshot(msg))
+    stats = stats.concat(make_eventloop_snapshot(msg))
 
-    done(null, {metrics: metrics})
+    done(null, {stats: stats})
   })
-}
-
-function make_memory_usage (msg) {
-  var mem = msg.memory
-  var proc = msg.process
-
-  var series = {
-    metric: 'memory_usage',
-    values: {
-      heap_total: mem.heapTotal,
-      heap_used: mem.heapUsed,
-      rss: mem.rss
-    },
-    tags: {
-      pid: proc.pid
-    }
-  }
-
-  return [series]
 }
 
 function make_cpu_snapshot (msg) {
@@ -58,10 +37,11 @@ function make_cpu_snapshot (msg) {
   var proc = msg.process
 
   var series = []
+  var id = 0
 
   _.each(cpus, (cpu) => {
     series.push({
-      metric: 'cpu_snapshot',
+      stat: 'cpu_snapshot',
       values: {
         speed: cpu.speed,
         user: cpu.times.user,
@@ -71,7 +51,8 @@ function make_cpu_snapshot (msg) {
       },
       tags: {
         pid: proc.pid,
-        model: cpu.model
+        model: cpu.model,
+        id: ++id
       }
     })
   })
@@ -79,41 +60,28 @@ function make_cpu_snapshot (msg) {
   return series
 }
 
-function make_system_snapshot (msg) {
-  var sys = msg.system
-  var proc = msg.process
-
-  var series = {
-    metric: 'system_snapshot',
-    values: {
-      mem_total: sys.totalmem,
-      mem_used: sys.freemem,
-      uptime: sys.uptime
-    },
-    tags: {
-      pid: proc.pid,
-      arch: sys.arch,
-      host: sys.hostname,
-      platform: sys.platform
-    }
-  }
-
-  return [series]
-}
-
 function make_process_snapshot (msg) {
   var proc = msg.process
+  var sys = msg.system
+  var mem = msg.memory
 
   var series = {
-    metric: 'process_snapshot',
+    stat: 'process_snapshot',
     values: {
-      uptime: proc.uptime
+      ram_total: sys.totalmem,
+      ram_used: sys.freemem,
+      heap_total: mem.heapTotal,
+      heap_used: mem.heapUsed,
+      heap_rss: mem.rss,
+      sys_uptime: sys.uptime,
+      proc_uptime: proc.uptime
     },
     tags: {
       pid: proc.pid,
       title: proc.title,
       host: proc.hostname,
-      platform: proc.platform
+      arch: sys.arch,
+      platform: sys.platform
     }
   }
 
@@ -125,7 +93,7 @@ function make_eventloop_snapshot (msg) {
   var proc = msg.process
 
   var series = {
-    metric: 'event_loop_snapshot',
+    stat: 'event_loop_snapshot',
     values: {
       delay: loop.delay,
       limit: loop.limit
