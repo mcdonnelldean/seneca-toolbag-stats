@@ -7,17 +7,24 @@ This module is currently a work in progress.
 
 ## Metrics
 
-### Memory Usage
+### Process Snapshot
 ```
 {
-  "metric": "memory_usage",
+  "stat": "process_snapshot",
   "values": {
-    "heap_total": 65959680,
-    "heap_used": 43169112,
-    "rss": 88629248
+    "ram_total": 17179869184,
+    "ram_used": 8637968384,
+    "heap_total": 68023552,
+    "heap_used": 41239832,
+    "heap_rss": 88076288,
+    "sys_uptime": 1075722,
+    "proc_uptime": 4.344
   },
   "tags": {
-    "pid": 50526
+    "pid": 66618,
+    "title": "node",
+    "arch": "x64",
+    "platform": "darwin"
   }
 }
 ```
@@ -25,49 +32,18 @@ This module is currently a work in progress.
 ### Cpu Snapshot
 ```
 {
-  "metric": "cpu_snapshot",
+  "stat": "cpu_snapshot",
   "values": {
     "speed": 3100,
-    "user": 10831180,
+    "user": 14114880,
     "nice": 0,
-    "idle": 264185920,
+    "idle": 331620480,
     "irq": 0
   },
   "tags": {
-    "pid": 50526,
-    "model": "Intel(R) Core(TM) i7-5557U CPU @ 3.10GHz"
-  }
-}
-```
-
-### System Snapshot
-```
-{
-  "metric": "system_snapshot",
-  "values": {
-    "mem_total": 17179869184,
-    "mem_used": 5719900160,
-    "uptime": 898570
-  },
-  "tags": {
-    "pid": 50526,
-    "arch": "x64",
-    "host": "mcddmpb",
-    "platform": "darwin"
-  }
-}
-```
-
-### Process Snapshot
-```
-{
-  "metric": "process_snapshot",
-  "values": {
-    "uptime": 3.324
-  },
-  "tags": {
-    "pid": 50526,
-    "title": "node"
+    "pid": 66618,
+    "model": "Intel(R) Core(TM) i7-5557U CPU @ 3.10GHz",
+    "id": 4
   }
 }
 ```
@@ -75,14 +51,14 @@ This module is currently a work in progress.
 ### Event Loop Snapshot
 ```
 {
-  "metric": "event_loop_snapshot",
+  "stat": "event_loop_snapshot",
   "values": {
-    "delay": 4.115284979343414,
+    "delay": 4.336254000663757,
     "limit": 30
   },
   "tags": {
     "over_limit": false,
-    "pid": 56712
+    "pid": 66618
   }
 }
 ```
