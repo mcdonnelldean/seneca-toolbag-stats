@@ -84,7 +84,7 @@ function make_process_snapshot (msg) {
       host: proc.hostname,
       arch: sys.arch,
       platform: sys.platform,
-      exec_path: proc.execPath,
+      exec_path: encodeURIComponent(proc.execPath),
       ver_node: proc.versions.node,
       ver_v8: proc.versions.v8,
       ver_uv: proc.versions.uv,
