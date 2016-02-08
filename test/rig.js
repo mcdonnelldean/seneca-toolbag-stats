@@ -3,13 +3,11 @@
 const config = {
   stats: {
     collector: true,
-    log_metrics: true,
-    log_payload: false
+    log_input: false,
+    log_output: true
   }
 }
 
-// Allows easy testing of this
-// plugin, simply run `npm run rig`.
 require('seneca')()
   .use('stats', config.stats)
   .use('..')

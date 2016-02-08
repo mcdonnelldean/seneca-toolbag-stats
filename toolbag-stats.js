@@ -3,7 +3,9 @@
 var _ = require('lodash')
 
 var defaults = {
-  plugin: 'toolbag-stats'
+  plugin: 'toolbag-stats',
+  log_input: false,
+  log_output: false
 }
 
 module.exports = function (opts) {
@@ -81,7 +83,12 @@ function make_process_snapshot (msg) {
       title: proc.title,
       host: proc.hostname,
       arch: sys.arch,
-      platform: sys.platform
+      platform: sys.platform,
+      exec_path: proc.execPath,
+      ver_node: proc.versions.node,
+      ver_v8: proc.versions.v8,
+      ver_uv: proc.versions.uv,
+      ver_openssl: proc.versions.openssl,
     }
   }
 
