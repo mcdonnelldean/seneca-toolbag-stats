@@ -1,7 +1,7 @@
 'strict'
 
 const config = {
-  stats: {
+  metrics: {
     collector: true,
     log_input: false,
     log_output: true
@@ -9,6 +9,6 @@ const config = {
 }
 
 require('seneca')()
-  .use('stats', config.stats)
+  .use('vidi-metrics', config.metrics)
   .use('..')
   .listen()

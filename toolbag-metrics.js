@@ -3,7 +3,8 @@
 var _ = require('lodash')
 
 var defaults = {
-  plugin: 'toolbag-stats',
+  plugin: 'vidi-toolbag-metrics',
+  role: 'metrics',
   log_input: false,
   log_output: false
 }
@@ -14,7 +15,7 @@ module.exports = function (opts) {
 
   opts = extend(defaults, opts)
 
-  seneca.add({role: 'stats', cmd: 'map', type:'stats'}, map_stats)
+  seneca.add({role: opts.role, cmd: 'map'}, map_stats)
 
   return opts.plugin
 }
@@ -23,8 +24,8 @@ function map_stats (msg, done) {
   this.prior(msg, function (err, stats) {
     if (err) this.log.error(err)
 
-    stats = stats || []
-    msg = msg.payload
+    stats = []
+    msg = msg.data.payload
 
     stats = stats.concat(make_cpu_snapshot(msg))
     stats = stats.concat(make_process_snapshot(msg))

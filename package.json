@@ -1,17 +1,17 @@
 {
-  "name": "seneca-toolbag-stats",
+  "name": "seneca-toolbag-metrics",
   "version": "0.0.1",
   "description": "A toolbag collector for seneca-stats",
-  "main": "toolbag-stats.js",
+  "main": "toolbag-metrics.js",
   "author": "Dean McDonnell (http://mcdonnelldean.me)",
   "license": "MIT",
   "scripts": {
-    "rig": "node -r toolbag ./test/rig.js"
+    "demo": "node -r toolbag ./test/demo.js"
   },
   "dependencies": {
     "lodash": "4.2.1",
     "seneca": "1.1.0",
-    "seneca-stats": "mcdonnelldean/seneca-stats",
+    "vidi-metrics": "vidi-insights/vidi-metrics",
     "toolbag": "^0.7.0"
   }
 }
