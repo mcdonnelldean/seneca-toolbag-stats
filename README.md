@@ -1,6 +1,6 @@
-# seneca-toolbag-stats
+# vidi-toolbag-metrics
 
-A toolbag collector for seneca-stats.
+A toolbag collector for vidi-metrics.
 
 ## Work in progress
 This module is currently a work in progress.

@@ -1,7 +1,7 @@
 {
-  "name": "seneca-toolbag-metrics",
+  "name": "vidi-toolbag-metrics",
   "version": "0.0.1",
-  "description": "A toolbag collector for seneca-stats",
+  "description": "A toolbag collector for vidi-metrics",
   "main": "toolbag-metrics.js",
   "author": "Dean McDonnell (http://mcdonnelldean.me)",
   "license": "MIT",
