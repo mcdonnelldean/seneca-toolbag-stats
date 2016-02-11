@@ -9,42 +9,62 @@ var defaults = {
   log_output: false
 }
 
+
 module.exports = function (opts) {
   var seneca = this
   var extend = seneca.util.deepextend
 
   opts = extend(defaults, opts)
 
-  seneca.add({role: opts.role, cmd: 'map'}, map_stats)
+  seneca.add({role: opts.role, hook: 'tag'}, tag)
+  seneca.add({role: opts.role, hook: 'map', source: 'toolbag'}, map)
 
   return opts.plugin
 }
 
-function map_stats (msg, done) {
-  this.prior(msg, function (err, stats) {
-    if (err) this.log.error(err)
 
-    stats = []
-    msg = msg.data.payload
+function tag (msg, done) {
+  if (!msg && !msg.type === 'stats') {
+    return done(null, null)
+  }
 
-    stats = stats.concat(make_cpu_snapshot(msg))
-    stats = stats.concat(make_process_snapshot(msg))
-    stats = stats.concat(make_eventloop_snapshot(msg))
+  var data = msg.payload
+  if (!data && !data.source) {
+    return done(null, null)
+  }
 
-    done(null, {stats: stats})
+  return done(null, {
+    source: data.payload.source,
+    payload: data.payload
   })
 }
 
-function make_cpu_snapshot (msg) {
-  var cpus = msg.cpu
-  var proc = msg.process
+
+function map (msg, done) {
+  this.prior(msg, function (err, metrics) {
+    if (err) this.log.error(err)
+
+    metrics = []
+    metrics = metrics.concat(make_cpu_snapshot(msg.payload))
+    metrics = metrics.concat(make_process_snapshot(msg.payload))
+    metrics = metrics.concat(make_eventloop_snapshot(msg.payload))
+
+    done(null, metrics)
+  })
+}
+
+
+function make_cpu_snapshot (data) {
+  var cpus = data.cpu
+  var proc = data.process
 
   var series = []
   var id = 0
 
   _.each(cpus, (cpu) => {
     series.push({
-      stat: 'cpu_snapshot',
+      source: data.source,
+      name: 'cpu_snapshot',
       values: {
         speed: cpu.speed,
         user: cpu.times.user,
@@ -63,13 +83,15 @@ function make_cpu_snapshot (msg) {
   return series
 }
 
-function make_process_snapshot (msg) {
-  var proc = msg.process
-  var sys = msg.system
-  var mem = msg.memory
+
+function make_process_snapshot (data) {
+  var proc = data.process
+  var sys = data.system
+  var mem = data.memory
 
   var series = {
-    stat: 'process_snapshot',
+    source: data.source,
+    name: 'process_snapshot',
     values: {
       ram_total: sys.totalmem,
       ram_used: sys.freemem,
@@ -82,7 +104,7 @@ function make_process_snapshot (msg) {
     tags: {
       pid: proc.pid,
       title: proc.title,
-      host: proc.hostname,
+      host: sys.hostName,
       arch: sys.arch,
       platform: sys.platform,
       exec_path: encodeURIComponent(proc.execPath),
@@ -96,12 +118,14 @@ function make_process_snapshot (msg) {
   return [series]
 }
 
-function make_eventloop_snapshot (msg) {
-  var loop = msg.eventLoop
-  var proc = msg.process
+
+function make_eventloop_snapshot (data) {
+  var loop = data.eventLoop
+  var proc = data.process
 
   var series = {
-    stat: 'event_loop_snapshot',
+    source: data.source,
+    name: 'event_loop_snapshot',
     values: {
       delay: loop.delay,
       limit: loop.limit
