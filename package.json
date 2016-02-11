@@ -1,17 +1,21 @@
 {
   "name": "vidi-toolbag-metrics",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A toolbag collector for vidi-metrics",
   "main": "toolbag-metrics.js",
   "author": "Dean McDonnell (http://mcdonnelldean.me)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vidi-insights/vidi-toolbag-metrics.git"
+  },
   "scripts": {
     "demo": "node -r toolbag ./srv/demo.js"
   },
   "dependencies": {
     "lodash": "4.2.1",
     "seneca": "1.1.0",
-    "vidi-metrics": "vidi-insights/vidi-metrics#vnext",
+    "vidi-metrics": "0.1.0",
     "toolbag": "0.7.0"
   }
 }
