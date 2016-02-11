@@ -6,12 +6,12 @@
   "author": "Dean McDonnell (http://mcdonnelldean.me)",
   "license": "MIT",
   "scripts": {
-    "demo": "node -r toolbag ./test/demo.js"
+    "demo": "node -r toolbag ./srv/demo.js"
   },
   "dependencies": {
     "lodash": "4.2.1",
     "seneca": "1.1.0",
-    "vidi-metrics": "vidi-insights/vidi-metrics",
-    "toolbag": "^0.7.0"
+    "vidi-metrics": "vidi-insights/vidi-metrics#vnext",
+    "toolbag": "0.7.0"
   }
 }
