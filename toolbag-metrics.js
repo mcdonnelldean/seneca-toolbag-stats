@@ -4,9 +4,7 @@ var _ = require('lodash')
 
 var defaults = {
   plugin: 'vidi-toolbag-metrics',
-  role: 'metrics',
-  log_input: false,
-  log_output: false
+  role: 'metrics'
 }
 
 
@@ -48,18 +46,45 @@ function map (msg, done) {
     metrics = metrics.concat(make_cpu_snapshot(msg.payload))
     metrics = metrics.concat(make_process_snapshot(msg.payload))
     metrics = metrics.concat(make_eventloop_snapshot(msg.payload))
+    metrics = metrics.concat(make_argv(msg.payload))
 
     done(null, metrics)
   })
 }
 
+function make_argv (data) {
+  var meta = data.meta || {tags: []}
+  var proc = data.process
+  var argvs = proc.argv
+
+  var index = 0
+  var series = []
+
+  _.each(argvs, (argv) => {
+    series.push({
+      timestamp: new Date(data.timestamp).getTime(),
+      source: data.source,
+      name: 'argv',
+      values: {
+        path: encodeURIComponent(argv)
+      },
+      tags: {
+        pid: proc.pid,
+        tag: meta.tags[0] || 'untagged'
+      }
+    })
+  })
+
+  return series
+}
 
 function make_cpu_snapshot (data) {
   var cpus = data.cpu
   var proc = data.process
 
-  var series = []
+
   var id = 0
+  var series = []
 
   _.each(cpus, (cpu) => {
     series.push({
@@ -104,7 +129,7 @@ function make_process_snapshot (data) {
     tags: {
       pid: proc.pid,
       title: proc.title,
-      host: sys.hostName,
+      host: sys.hostname,
       arch: sys.arch,
       platform: sys.platform,
       exec_path: encodeURIComponent(proc.execPath),
