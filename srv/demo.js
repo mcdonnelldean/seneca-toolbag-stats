@@ -2,13 +2,14 @@
 
 const config = {
   metrics: {
+    log_input: true,
     collector: {enabled: true}
   }
 }
 
 require('seneca')()
   .use('vidi-metrics', config.metrics)
-  .use('..')
+  .use(require('..'))
   .use(sink_logger)
   .listen()
 

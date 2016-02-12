@@ -4,9 +4,7 @@ var _ = require('lodash')
 
 var defaults = {
   plugin: 'vidi-toolbag-metrics',
-  role: 'metrics',
-  log_input: false,
-  log_output: false
+  role: 'metrics'
 }
 
 
@@ -48,18 +46,46 @@ function map (msg, done) {
     metrics = metrics.concat(make_cpu_snapshot(msg.payload))
     metrics = metrics.concat(make_process_snapshot(msg.payload))
     metrics = metrics.concat(make_eventloop_snapshot(msg.payload))
+    metrics = metrics.concat(make_argv(msg.payload))
 
     done(null, metrics)
   })
 }
 
+function make_argv (data) {
+  var meta = data.meta || {tags: []}
+  var proc = data.process
+  var argvs = proc.argv
+
+  var index = 0
+  var series = []
+
+  _.each(argvs, (argv) => {
+    series.push({
+      source: data.source,
+      name: 'argv',
+      values: {
+        path: encodeURIComponent(argv)
+      },
+      tags: {
+        pid: proc.pid,
+        tag: meta.tags[0] || 'untagged',
+        index: ++index
+      }
+    })
+  })
+
+  return series
+}
 
 function make_cpu_snapshot (data) {
+  var meta = data.meta || {tags: []}
   var cpus = data.cpu
   var proc = data.process
 
+
+  var index = 0
   var series = []
-  var id = 0
 
   _.each(cpus, (cpu) => {
     series.push({
@@ -74,8 +100,9 @@ function make_cpu_snapshot (data) {
       },
       tags: {
         pid: proc.pid,
+        tag: meta.tags[0] || 'untagged',
         model: cpu.model,
-        id: ++id
+        index: ++index
       }
     })
   })
@@ -85,6 +112,7 @@ function make_cpu_snapshot (data) {
 
 
 function make_process_snapshot (data) {
+  var meta = data.meta || {tags: []}
   var proc = data.process
   var sys = data.system
   var mem = data.memory
@@ -103,8 +131,9 @@ function make_process_snapshot (data) {
     },
     tags: {
       pid: proc.pid,
+      tag: meta.tags[0] || 'untagged',
       title: proc.title,
-      host: sys.hostName,
+      host: sys.hostname,
       arch: sys.arch,
       platform: sys.platform,
       exec_path: encodeURIComponent(proc.execPath),
@@ -120,19 +149,22 @@ function make_process_snapshot (data) {
 
 
 function make_eventloop_snapshot (data) {
+  var meta = data.meta || {tags: []}
   var loop = data.eventLoop
   var proc = data.process
 
   var series = {
     source: data.source,
     name: 'event_loop_snapshot',
+    tag: meta.tags[0] || 'untagged',
     values: {
       delay: loop.delay,
       limit: loop.limit
     },
     tags: {
-      over_limit: loop.overLimit,
-      pid: proc.pid
+      pid: proc.pid,
+      tag: meta.tags[0] || 'untagged',
+      over_limit: loop.overLimit
     }
   }
 

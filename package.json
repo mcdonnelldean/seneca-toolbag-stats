@@ -16,6 +16,6 @@
     "lodash": "4.2.1",
     "seneca": "1.1.0",
     "vidi-metrics": "0.1.0",
-    "toolbag": "0.7.0"
+    "toolbag": "0.8.0"
   }
 }
