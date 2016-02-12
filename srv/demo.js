@@ -2,7 +2,7 @@
 
 const config = {
   metrics: {
-    log_input: true,
+    log_input: false,
     collector: {enabled: true}
   }
 }

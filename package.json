@@ -1,6 +1,6 @@
 {
   "name": "vidi-toolbag-metrics",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A toolbag collector for vidi-metrics",
   "main": "toolbag-metrics.js",
   "author": "Dean McDonnell (http://mcdonnelldean.me)",
