@@ -62,7 +62,6 @@ function make_argv (data) {
 
   _.each(argvs, (argv) => {
     series.push({
-      timestamp: new Date(data.timestamp).getTime(),
       source: data.source,
       name: 'argv',
       values: {
@@ -70,7 +69,8 @@ function make_argv (data) {
       },
       tags: {
         pid: proc.pid,
-        tag: meta.tags[0] || 'untagged'
+        tag: meta.tags[0] || 'untagged',
+        index: ++index
       }
     })
   })
@@ -79,11 +79,12 @@ function make_argv (data) {
 }
 
 function make_cpu_snapshot (data) {
+  var meta = data.meta || {tags: []}
   var cpus = data.cpu
   var proc = data.process
 
 
-  var id = 0
+  var index = 0
   var series = []
 
   _.each(cpus, (cpu) => {
@@ -99,8 +100,9 @@ function make_cpu_snapshot (data) {
       },
       tags: {
         pid: proc.pid,
+        tag: meta.tags[0] || 'untagged',
         model: cpu.model,
-        id: ++id
+        index: ++index
       }
     })
   })
@@ -110,6 +112,7 @@ function make_cpu_snapshot (data) {
 
 
 function make_process_snapshot (data) {
+  var meta = data.meta || {tags: []}
   var proc = data.process
   var sys = data.system
   var mem = data.memory
@@ -128,6 +131,7 @@ function make_process_snapshot (data) {
     },
     tags: {
       pid: proc.pid,
+      tag: meta.tags[0] || 'untagged',
       title: proc.title,
       host: sys.hostname,
       arch: sys.arch,
@@ -145,19 +149,22 @@ function make_process_snapshot (data) {
 
 
 function make_eventloop_snapshot (data) {
+  var meta = data.meta || {tags: []}
   var loop = data.eventLoop
   var proc = data.process
 
   var series = {
     source: data.source,
     name: 'event_loop_snapshot',
+    tag: meta.tags[0] || 'untagged',
     values: {
       delay: loop.delay,
       limit: loop.limit
     },
     tags: {
-      over_limit: loop.overLimit,
-      pid: proc.pid
+      pid: proc.pid,
+      tag: meta.tags[0] || 'untagged',
+      over_limit: loop.overLimit
     }
   }
 
